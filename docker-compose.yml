@@ -1,0 +1,71 @@
+services:
+  mysqldb:
+    container_name: mysql-db
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: travelmanagement
+      # MYSQL_USER: klu
+      # MYSQL_PASSWORD: klu
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql   # volume added here
+
+  backend:
+    container_name: springboottest
+    build:
+      context: ./travel-backend
+      dockerfile: ../FULLSTACK/backend.Dockerfile
+    ports:
+      - "2025:8081"
+    depends_on:
+      - mysqldb
+    restart: on-failure
+
+  frontend:
+    container_name: reacttest
+    build:
+      context: ./travel-frontend
+      dockerfile: ../FULLSTACK/frontend.Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+# Declare volumes at the bottom
+volumes:
+  mysql-data:
+
+# services:
+#   mysqldb:
+#     image: mysql:8
+#     container_name: mysql-db
+#     environment:
+#       MYSQL_ROOT_PASSWORD: docker
+#       MYSQL_DATABASE: klustudentdb
+#     ports:
+#       - "3306:3306"
+#     volumes:
+#       - mysql_data:/var/lib/mysql
+
+#   backend:
+#     image: docker-backend:latest
+#     container_name: springboottest
+#     ports:
+#       - "2025:8081"
+#     depends_on:
+#       - mysqldb
+#     restart: on-failure
+
+#   frontend:
+#     image: docker-frontend:latest
+#     container_name: reacttest
+#     ports:
+#       - "3000:80"
+#     depends_on:
+#       - backend
+#     restart: on-failure
+
+# volumes:
+#   mysql_data:
